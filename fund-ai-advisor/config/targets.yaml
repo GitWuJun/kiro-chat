@@ -1,0 +1,22 @@
+# 用户目标仓位配置
+# 实现 Agent: 这是示例，启动时如果文件不存在则用这个默认值
+
+# 总仓位目标
+total_position:
+  target: 0.70          # 70% 仓位
+  band: 0.05            # ±5% 容忍带
+  max_per_fund: 0.25    # 单基金不超过总仓位 25%
+
+# 资产配置目标（按基金类型）
+allocation:
+  equity_active: 0.25       # 主动权益
+  equity_index: 0.30        # 指数
+  qdii: 0.10                # 海外
+  bond: 0.20                # 债券
+  money_market: 0.15        # 货币
+
+# 每基金目标周期
+holding_period_default_days: 180
+
+# 现金池
+available_cash_cny: 50000

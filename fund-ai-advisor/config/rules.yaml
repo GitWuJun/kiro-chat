@@ -1,0 +1,59 @@
+# =====================================================================
+# Fund Advisor 规则配置
+# 修改后无需重启，下次 check_rules 调用时自动重新加载
+# =====================================================================
+
+# ---------- 硬规则（不可被 LLM 推翻）----------
+hard_rules:
+  - id: H1_min_holding_days
+    desc: 持有天数小于 7 天，禁止建议赎回
+    type: forbid_sell
+    severity: blocker
+
+  - id: H2_fee_threshold_warning
+    desc: 赎回费率 >= 0.5% 时必须显式警告
+    type: warning
+    threshold: 0.005
+    severity: warning
+
+  - id: H3_qdii_no_intraday_decision
+    desc: QDII 基金不基于 A 股盘中表现做决策
+    type: forbid_decision_basis
+    severity: blocker
+
+  - id: H4_data_freshness
+    desc: 估值时间戳超过 10 分钟视为不新鲜
+    threshold_seconds: 600
+    severity: warning
+
+# ---------- 软规则（用户可配置）----------
+soft_rules:
+  - id: S1_position_drift
+    desc: 单基金偏离目标仓位超过 5% 才调仓
+    threshold: 0.05
+    severity: info
+
+  - id: S2_max_single_add
+    desc: 单次加仓不超过可用现金的 20%
+    threshold: 0.20
+    severity: info
+
+  - id: S3_take_profit
+    desc: 单基金盈利 >= 30% 触发分批止盈提示
+    threshold: 0.30
+    severity: info
+
+  - id: S4_stop_loss_pause
+    desc: 单基金亏损 >= 15% 触发"暂停加仓 + 评估"
+    threshold: -0.15
+    severity: warning
+
+  - id: S5_no_new_buy_before_event
+    desc: 重要事件前 1 个交易日不开新仓
+    event_types: [fed_meeting, npc_meeting, cpi_release]
+    severity: info
+
+  - id: S6_cooldown
+    desc: 同一基金 3 个交易日内不重复操作
+    cooldown_trading_days: 3
+    severity: info
